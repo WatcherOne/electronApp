@@ -1,0 +1,20 @@
+{
+  "name": "decompose",
+  "version": "1.0.0",
+  "description": "a project to decompose data",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron ."
+  },
+  "keywords": [
+    "electron",
+    "node"
+  ],
+  "author": "watcher",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^27.1.2",
+    "electron-devtools-installer": "^3.2.0"
+  }
+}

@@ -1,0 +1,20 @@
+:root {
+    /* 使用操作系统主题方案，亮色配色方案与深色配色方案 */
+    color-scheme: light dark;
+}
+
+/* 监听操作系统主题模式 */
+/* 用户自定义颜色方案覆盖其系统亮色与深色的配色方案 */
+@media (prefers-color-scheme: light) {
+    body {
+        background-color: #ddd;
+        color: #333;
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    body {
+        background-color: #333;
+        color: white;
+    }
+}

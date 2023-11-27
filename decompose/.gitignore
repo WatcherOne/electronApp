@@ -1,0 +1,12 @@
+logs
+*.log
+npm-debug.log
+yarn-debug.log
+
+.npm
+
+node_modules/
+
+build/Release
+dist
+out
