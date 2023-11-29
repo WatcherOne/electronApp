@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain, nativeTheme } = require('electron')
+const { app, BrowserWindow, ipcMain, nativeTheme, Menu, Notification } = require('electron')
 const path = require('path')
 // const { default: installExtension, REACT_DEVELOPER_TOOLS } = require('electron-devtools-installer')
 
@@ -50,9 +50,40 @@ ipcMain.handle('decompose', (e, sum, howMany) => {
     return decompose(sum, howMany)
 })
 
+const NOTIFICATION_TITLE = 'Game is start'
+const NOTIFICATION_BODY = 'This is a internal game'
+
+const showNotification = () => {
+    new Notification({
+        title: NOTIFICATION_TITLE,
+        body: NOTIFICATION_BODY
+    }).show()
+}
+
+const dockMenu = Menu.buildFromTemplate([
+    {
+        label: 'New Window',
+        click() {
+            console.log('New window')
+        }
+    },
+    {
+        label: 'New Game',
+        click() {
+            createWindow()
+            console.log('New Game')
+        }
+    }
+])
+
 // 只有 app 模块的 ready事件 被激发后才能创建浏览器窗口
 // 通过 app.whenReady API 来监听此事件
 app.whenReady().then(() => {
+    // 设置dock菜单，只有macOS上可用
+    if (process.platform === 'darwin') {
+        app.dock.setMenu(dockMenu)
+    }
+}).then(() => {
 
     // installExtension(REACT_DEVELOPER_TOOLS)
     //     .then(name => console.log(`Added Extension: ${name}`))
@@ -67,7 +98,7 @@ app.whenReady().then(() => {
             createWindow()
         }
     })
-})
+}).then(showNotification)
 
 // 监听窗口被关闭时退出程序
 app.on('window-all-closed', () => {
