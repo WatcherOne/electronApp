@@ -28,109 +28,123 @@ document.getElementById('decompose').addEventListener('click', async () => {
     // document.getElementById('result').innerText = JSON.stringify(result)
 })
 
-const sudokuBoard = [
-    [5, 3, 0, 0, 7, 0, 0, 0, 0],
-    [6, 0, 0, 1, 9, 5, 0, 0, 0],
-    [0, 9, 8, 0, 0, 0, 0, 6, 0],
-    [8, 0, 0, 0, 6, 0, 0, 0, 3],
-    [4, 0, 0, 8, 0, 3, 0, 0, 1],
-    [7, 0, 0, 0, 2, 0, 0, 0, 6],
-    [0, 6, 0, 0, 0, 0, 2, 8, 0],
-    [0, 0, 0, 4, 1, 9, 0, 0, 5],
-    [0, 0, 0, 0, 8, 0, 0, 7, 9]
-];
+/**
+ *  START
+ */
 
-const solution = [
-    [5, 3, 4, 6, 7, 8, 9, 1, 2],
-    [6, 7, 2, 1, 9, 5, 3, 4, 8],
-    [1, 9, 8, 3, 4, 2, 5, 6, 7],
-    [8, 5, 9, 7, 6, 1, 4, 2, 3],
-    [4, 2, 6, 8, 5, 3, 7, 9, 1],
-    [7, 1, 3, 9, 2, 4, 8, 5, 6],
-    [9, 6, 1, 5, 3, 7, 2, 8, 4],
-    [2, 8, 7, 4, 1, 9, 6, 3, 5],
-    [3, 4, 5, 2, 8, 6, 1, 7, 9]
-];
+let allBoard = {}
+let sudokuBoard = []
+let solution = []
 
-function generateSudokuBoard() {
-    const table = document.getElementById("sudokuBoard");
+async function getQuestions () {
+    const res = await fetch('./questions.json')
+    if (!res.ok) {
+        Promise.reject('获取数据失败')
+        return
+    }
+    allBoard = await res.json() || {}
+}
+
+function randomChoice () {
+    const random = 0
+    const currentBoard = allBoard[random] || {}
+    sudokuBoard = currentBoard.question || []
+    solution = currentBoard.solution || []
+}
+
+async function generateSudokuBoard () {
+
+    await getQuestions()
+    // 随机选择一道数独题
+    randomChoice()
+
+    const table = document.getElementById('sudokuBoard')
 
     for (let i = 0; i < 9; i++) {
-        const row = document.createElement("tr");
+        const row = document.createElement('tr')
 
         for (let j = 0; j < 9; j++) {
-            const cell = document.createElement("td");
-            const value = sudokuBoard[i][j];
+            const cell = document.createElement('td')
 
-            if (value !== 0) {
-                cell.textContent = value;
-                cell.classList.add("given");
-            } else {
-                const input = document.createElement("input");
-                input.type = "text";
-                input.maxLength = 1;
-                input.addEventListener("input", function () {
-                    onInputChange(i, j, input.value);
-                });
-                cell.appendChild(input);
+            if ((i + 1) % 3 === 0) {
+                cell.classList.add('third-row')
+            }
+            if ((j + 1) % 3 === 0) {
+                cell.classList.add('third-col')
             }
 
-            row.appendChild(cell);
-        }
+            const value = sudokuBoard[i] ? sudokuBoard[i][j] : 0
 
-        table.appendChild(row);
+            // 当值不为0时，则表示数独的初始值，已经不能填写
+            if (value !== 0) {
+                cell.textContent = value
+                cell.classList.add('given')
+            } else {
+                const input = document.createElement('input')
+                input.type = 'text'
+                input.readOnly = true
+                input.maxLength = 1
+                input.addEventListener('input', () => {
+                    onInputChange(i, j, input.value)
+                })
+                cell.appendChild(input)
+            }
+            row.appendChild(cell)
+        }
+        table.appendChild(row)
     }
 }
 
-function onInputChange(row, col, value) {
-    sudokuBoard[row][col] = parseInt(value) || 0;
+// 输入框事件，当输入值时将数独板更新
+function onInputChange (row, col, value) {
+    console.log('dsds', value)
+    sudokuBoard[row][col] = parseInt(value) || 0
 }
 
-function solveSudoku() {
-    for (let i = 0; i < 9; i++) {
-        for (let j = 0; j < 9; j++) {
-            sudokuBoard[i][j] = solution[i][j];
-        }
-    }
-
-    updateBoard();
-}
-
-function checkSolution() {
-    let isCorrect = true;
+// 检查数独是否正确
+function checkSolution () {
+    let isCorrect = true
 
     for (let i = 0; i < 9; i++) {
         for (let j = 0; j < 9; j++) {
             if (sudokuBoard[i][j] !== solution[i][j]) {
-                isCorrect = false;
-                break;
+                isCorrect = false
+                break
             }
         }
     }
 
     if (isCorrect) {
-        alert("Congratulations! You solved the Sudoku!");
+        alert('Congratulations! You solved the Sudoku!')
     } else {
-        alert("Sorry, the solution is incorrect. Keep trying!");
+        alert('Sorry, the solution is incorrect. Keep trying!')
     }
 }
 
-function updateBoard() {
-    const inputs = document.querySelectorAll("input");
-
-    inputs.forEach((input, index) => {
-        const row = Math.floor(index / 9);
-        const col = index % 9;
-        const value = sudokuBoard[row][col];
-
-        if (value !== 0) {
-            input.value = value;
-        } else {
-            input.value = "";
+// 公布答案
+function solveSudoku () {
+    for (let i = 0; i < 9; i++) {
+        for (let j = 0; j < 9; j++) {
+            sudokuBoard[i][j] = solution[i][j]
         }
-    });
+    }
+    updateBoard()
 }
 
-generateSudokuBoard();
+function updateBoard () {
+    const inputs = document.querySelectorAll('input')
 
+    inputs.forEach((input, index) => {
+        const row = Math.floor(index / 9)
+        const col = index % 9
+        const value = sudokuBoard[row][col]
 
+        if (value !== 0) {
+            input.value = value
+        } else {
+            input.value = ''
+        }
+    })
+}
+
+generateSudokuBoard()

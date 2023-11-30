@@ -18,3 +18,53 @@
         color: white;
     }
 }
+
+.sudokuBoard {
+    width: 450px;
+    height: 450px;
+    border-collapse: collapse;
+    border-color: #d7d5d5;
+    background-color: white;
+    cursor: default;
+    border-top-color: #333;
+    border-left-color: #333;
+    border-style: double;
+    font-size: 20px;
+}
+
+.sudokuBoard tr td {
+    padding: 0;
+    text-align: center;
+}
+
+.sudokuBoard tr td.given {
+    background-color: #ddd;
+}
+
+.sudokuBoard tr td.third-col {
+    border-right-color: #333;
+    border-right-style: double;
+}
+
+.sudokuBoard tr td.third-row {
+    border-bottom-color: #333;
+    border-bottom-style: double;
+}
+
+.sudokuBoard tr td input {
+    border-width: 0;
+    display: inline-block;
+    height: calc(100% - 2px);
+    width: calc(100% - 2px);
+    padding: 0;
+    background-color: #f8f8f8;
+    text-align: center;
+    cursor: pointer;
+}
+
+.sudokuBoard tr td input:focus,
+.sudokuBoard tr td input:focus-visible {
+    border-style: none;
+    outline: unset;
+    background-color: lightskyblue;
+}
