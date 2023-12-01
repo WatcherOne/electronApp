@@ -36,6 +36,9 @@ let allBoard = {}
 let sudokuBoard = []
 let solution = []
 
+let selectedRow = -1
+let selectedCol = -1
+
 async function getQuestions () {
     const res = await fetch('./questions.json')
     if (!res.ok) {
@@ -80,12 +83,10 @@ async function generateSudokuBoard () {
                 cell.textContent = value
                 cell.classList.add('given')
             } else {
-                const input = document.createElement('input')
-                input.type = 'text'
-                input.readOnly = true
-                input.maxLength = 1
-                input.addEventListener('input', () => {
-                    onInputChange(i, j, input.value)
+                const input = document.createElement('div')
+                input.classList.add(`cell-${i}-${j}`)
+                input.addEventListener('click', e => {
+                    updateBox(e.target, i, j)
                 })
                 cell.appendChild(input)
             }
@@ -95,11 +96,36 @@ async function generateSudokuBoard () {
     }
 }
 
-// 输入框事件，当输入值时将数独板更新
-function onInputChange (row, col, value) {
-    console.log('dsds', value)
-    sudokuBoard[row][col] = parseInt(value) || 0
+const BOARD_KEY = ['1', '2', '3', '4', '5', '6', '7', '8', '9']
+
+document.addEventListener('keydown', e => {
+    if (selectedRow < 0 || selectedCol < 0) return
+    if (BOARD_KEY.includes(e.key)) {
+        const selectedCell = document.querySelector(`.cell-${selectedRow}-${selectedCol}`)
+        const node = document.createElement('span')
+        node.innerText = e.key
+        selectedCell.appendChild(node)
+    }
+    if (e.key === 'Backspace') {
+        // delete
+    }
+})
+
+function updateBox (target, i, j) {
+    selectedRow = i
+    selectedCol = j
+    const cells = document.querySelectorAll('[class^=cell-]')
+    cells.forEach(cell => {
+        cell.classList.remove('focus')
+    })
+    target.classList.add('focus')
 }
+
+// 输入框事件，当输入值时将数独板更新
+// function onInputChange (row, col, value) {
+//     console.log('dsds', value)
+//     sudokuBoard[row][col] = parseInt(value) || 0
+// }
 
 // 检查数独是否正确
 function checkSolution () {

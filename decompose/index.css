@@ -51,20 +51,16 @@
     border-bottom-style: double;
 }
 
-.sudokuBoard tr td input {
-    border-width: 0;
+.sudokuBoard tr td div {
     display: inline-block;
-    height: calc(100% - 2px);
-    width: calc(100% - 2px);
-    padding: 0;
+    height: 100%;
+    width: 100%;
     background-color: #f8f8f8;
     text-align: center;
+    vertical-align: middle;
     cursor: pointer;
 }
 
-.sudokuBoard tr td input:focus,
-.sudokuBoard tr td input:focus-visible {
-    border-style: none;
-    outline: unset;
+.sudokuBoard tr td div.focus {
     background-color: lightskyblue;
 }
